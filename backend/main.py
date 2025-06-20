@@ -18,7 +18,8 @@ class Student(BaseModel):
 @app.post("/signup")
 def signup(u: User):
     db = get_db(); c = db.cursor()
-    c.execute("INSERT INTO users (email,password) VALUES (%s,%s)", (u.email, bcrypt.hashpw(u.password.encode(), bcrypt.gensalt())))
+    hashed = bcrypt.hashpw(u.password.encode(), bcrypt.gensalt()).decode()
+    c.execute("INSERT INTO users (email,password) VALUES (%s,%s)", (u.email, hashed))
     db.commit(); return {"message": "Signed up"}
 
 @app.post("/login")
